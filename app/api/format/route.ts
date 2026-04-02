@@ -29,8 +29,6 @@ VIKTIGT:
 - Fråga ALDRIG efter mer detaljer eller förtydliganden
 - Om information saknas för ett fält, lämna det tomt — behandlaren fyller i efterhand
 - Om texten är helt irrelevant för journalföring, svara ENDAST med: "Detta verktyg är avsett för medicinsk journalföring. Var god ange patientrelaterad information."
-- För ICD-10: identifiera relevanta diagnoser/tillstånd från texten och ange korrekt ICD-10-kod följt av kodtexten på svenska, t.ex. "M54.5 Lumbago"
-
 JOURNALMALL (använd exakt denna struktur):
 
 ANAMNES
@@ -44,9 +42,6 @@ ORTOPEDISKA TESTER
 
 DIAGNOS
 [Klinisk diagnos/bedömning]
-
-ICD-10
-[ICD-10-kod och beskrivning, t.ex. M54.5 Lumbago. En rad per diagnos.]
 
 LEDJUSTERING
 [Utförda ledjusteringar och teknik]
