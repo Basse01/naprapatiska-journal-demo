@@ -23,12 +23,21 @@ function parseJournal(text: string): Record<string, string> {
     const current = SECTIONS[i];
     const next = SECTIONS[i + 1];
 
-    const start = text.indexOf(current);
+    // Match "SECTION:" or "SECTION" (with optional colon)
+    const searchKey = current + ":";
+    let start = text.indexOf(searchKey);
+    let keyLen = searchKey.length;
+    if (start === -1) {
+      start = text.indexOf(current);
+      keyLen = current.length;
+    }
     if (start === -1) { result[current] = ""; continue; }
 
-    const contentStart = start + current.length;
-    const end = next ? text.indexOf(next, contentStart) : text.length;
-    result[current] = text.slice(contentStart, end !== -1 ? end : text.length).trim();
+    const contentStart = start + keyLen;
+    const nextKey = next ? text.indexOf(next + ":", contentStart) : -1;
+    const nextFallback = next ? text.indexOf(next, contentStart) : -1;
+    let end = nextKey !== -1 ? nextKey : (nextFallback !== -1 ? nextFallback : text.length);
+    result[current] = text.slice(contentStart, end).trim();
   }
 
   return result;

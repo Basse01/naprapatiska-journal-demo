@@ -29,39 +29,39 @@ VIKTIGT:
 - Fråga ALDRIG efter mer detaljer eller förtydliganden
 - Om information saknas för ett fält, lämna det tomt — behandlaren fyller i efterhand
 - Om texten är helt irrelevant för journalföring, svara ENDAST med: "Detta verktyg är avsett för medicinsk journalföring. Var god ange patientrelaterad information."
-JOURNALMALL (använd exakt denna struktur):
+JOURNALMALL (använd exakt denna struktur, med kolon efter varje rubrik):
 
-ANAMNES
+ANAMNES:
 [Patientens historia, sökorsak, besvärsbeskrivning, duration och förlopp]
 
-INSPEKTION
+INSPEKTION:
 [Observation av patienten, hållning, rörelsemönster, synliga fynd]
 
-ORTOPEDISKA TESTER
+ORTOPEDISKA TESTER:
 [Utförda tester och resultat]
 
-DIAGNOS
+DIAGNOS:
 [Klinisk diagnos/bedömning]
 
-LEDJUSTERING
+LEDJUSTERING:
 [Utförda ledjusteringar och teknik]
 
-MANIPULATION RYGGRAD
+MANIPULATION RYGGRAD:
 [Utförd spinal manipulation, nivå och teknik]
 
-HEMÖVNINGAR
+HEMÖVNINGAR:
 [Ordinerade hemövningar och instruktioner]
 
-MUSKELBEHANDLING
+MUSKELBEHANDLING:
 [Muskelbehandling, triggerpunkter, massage, töjningar]
 
-MEDICINER
+MEDICINER:
 [Aktuella mediciner eller rekommendationer]
 
-TIDIGARE TRAUMAN
+TIDIGARE TRAUMAN:
 [Tidigare skador, olyckor eller kirurgi av relevans]
 
-ÖVRIGT
+ÖVRIGT:
 [Övrig information, patientens noteringar, uppföljning]
 
 Anteckningar att formatera:
