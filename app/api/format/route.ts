@@ -29,38 +29,50 @@ VIKTIGT:
 - Fråga ALDRIG efter mer detaljer eller förtydliganden
 - Om information saknas för ett fält, lämna det tomt — behandlaren fyller i efterhand
 - Om texten är helt irrelevant för journalföring, svara ENDAST med: "Detta verktyg är avsett för medicinsk journalföring. Var god ange patientrelaterad information."
+- För ICD-10: identifiera relevanta diagnoser/tillstånd från texten och ange korrekt ICD-10-kod följt av kodtexten på svenska, t.ex. "M54.5 Lumbago"
 
 JOURNALMALL (använd exakt denna struktur):
 
 ANAMNES
-Sökorsak:
-Smärtbeskrivning:
-Duration och förlopp:
-Utlösande/lindrande faktorer:
-Tidigare besvär/behandling:
-Allmäntillstånd:
+[Patientens historia, sökorsak, besvärsbeskrivning, duration och förlopp]
 
-UNDERSÖKNING
-Inspektion:
-Rörelsetest:
-Palpation:
-Neurologisk undersökning:
+INSPEKTION
+[Observation av patienten, hållning, rörelsemönster, synliga fynd]
+
+ORTOPEDISKA TESTER
+[Utförda tester och resultat]
 
 DIAGNOS
+[Klinisk diagnos/bedömning]
 
-BEHANDLING
-Utförd behandling:
-Teknik:
+ICD-10
+[ICD-10-kod och beskrivning, t.ex. M54.5 Lumbago. En rad per diagnos.]
 
-RÅD & UPPFÖLJNING
-Egenvård/träning:
-Återbesök:
-Notering:
+LEDJUSTERING
+[Utförda ledjusteringar och teknik]
+
+MANIPULATION RYGGRAD
+[Utförd spinal manipulation, nivå och teknik]
+
+HEMÖVNINGAR
+[Ordinerade hemövningar och instruktioner]
+
+MUSKELBEHANDLING
+[Muskelbehandling, triggerpunkter, massage, töjningar]
+
+MEDICINER
+[Aktuella mediciner eller rekommendationer]
+
+TIDIGARE TRAUMAN
+[Tidigare skador, olyckor eller kirurgi av relevans]
+
+ÖVRIGT
+[Övrig information, patientens noteringar, uppföljning]
 
 Anteckningar att formatera:
 ${text}`,
         }],
-        max_tokens: 1024,
+        max_tokens: 2048,
       }),
     });
 

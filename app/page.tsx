@@ -4,10 +4,17 @@ import { useState, useRef, useCallback } from "react";
 
 const SECTIONS = [
   "ANAMNES",
-  "UNDERSÖKNING",
+  "INSPEKTION",
+  "ORTOPEDISKA TESTER",
   "DIAGNOS",
-  "BEHANDLING",
-  "RÅD & UPPFÖLJNING",
+  "ICD-10",
+  "LEDJUSTERING",
+  "MANIPULATION RYGGRAD",
+  "HEMÖVNINGAR",
+  "MUSKELBEHANDLING",
+  "MEDICINER",
+  "TIDIGARE TRAUMAN",
+  "ÖVRIGT",
 ];
 
 function parseJournal(text: string): Record<string, string> {
@@ -32,10 +39,13 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState("");
   const [interimText, setInterimText] = useState("");
+  const [rawFormatted, setRawFormatted] = useState("");
   const [fields, setFields] = useState<Record<string, string>>({});
   const [hasFormatted, setHasFormatted] = useState(false);
   const [isFormatting, setIsFormatting] = useState(false);
+  const [viewMode, setViewMode] = useState<"sections" | "combined">("sections");
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [copiedAll, setCopiedAll] = useState(false);
   const [error, setError] = useState("");
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -139,6 +149,7 @@ export default function Home() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Formatering misslyckades");
+      setRawFormatted(data.formattedText);
       setFields(parseJournal(data.formattedText));
       setHasFormatted(true);
     } catch (err: any) {
@@ -153,6 +164,16 @@ export default function Home() {
       await navigator.clipboard.writeText(fields[section] || "");
       setCopiedField(section);
       setTimeout(() => setCopiedField(null), 2000);
+    } catch {
+      setError("Kunde inte kopiera till urklipp");
+    }
+  };
+
+  const copyAll = async () => {
+    try {
+      await navigator.clipboard.writeText(rawFormatted);
+      setCopiedAll(true);
+      setTimeout(() => setCopiedAll(false), 2000);
     } catch {
       setError("Kunde inte kopiera till urklipp");
     }
@@ -246,43 +267,95 @@ export default function Home() {
           </section>
 
           {hasFormatted && (
-            <div className="space-y-4">
-              {SECTIONS.map((section) => (
-                <section key={section} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-semibold text-[#009083] tracking-widest uppercase">{section}</h3>
+            <>
+              {/* View mode toggle */}
+              <div className="flex items-center gap-2 mb-4 bg-white rounded-xl p-1.5 shadow-sm border border-gray-100 w-fit">
+                <button
+                  onClick={() => setViewMode("sections")}
+                  className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${viewMode === "sections" ? "bg-[#009083] text-white shadow-sm" : "text-gray-500 hover:text-[#009083]"}`}
+                >
+                  Sektioner
+                </button>
+                <button
+                  onClick={() => setViewMode("combined")}
+                  className={`px-5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${viewMode === "combined" ? "bg-[#009083] text-white shadow-sm" : "text-gray-500 hover:text-[#009083]"}`}
+                >
+                  All text
+                </button>
+              </div>
+
+              {viewMode === "sections" ? (
+                <div className="space-y-4">
+                  {SECTIONS.map((section) => (
+                    <section key={section} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-[#009083] tracking-widest uppercase">{section}</h3>
+                        <button
+                          onClick={() => copyField(section)}
+                          disabled={!fields[section]}
+                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed bg-[#f5f5f5] border border-gray-200 text-gray-500 hover:border-[#009083] hover:text-[#009083]"
+                        >
+                          {copiedField === section ? (
+                            <>
+                              <svg className="w-3.5 h-3.5 text-[#009083]" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              <span className="text-[#009083]">Kopierat</span>
+                            </>
+                          ) : (
+                            <>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                              Kopiera
+                            </>
+                          )}
+                        </button>
+                      </div>
+                      <textarea
+                        value={fields[section] || ""}
+                        onChange={(e) => setFields((prev) => ({ ...prev, [section]: e.target.value }))}
+                        placeholder="—"
+                        rows={fields[section] ? Math.max(2, fields[section].split("\n").length + 1) : 2}
+                        className="w-full p-4 bg-[#f8f8f8] border border-gray-200 rounded-xl resize-none text-[#333] text-sm placeholder-gray-300 focus:outline-none focus:border-[#009083] transition-colors"
+                      />
+                    </section>
+                  ))}
+                </div>
+              ) : (
+                <section className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-[#009083] tracking-widest uppercase">Fullständig journal</h3>
                     <button
-                      onClick={() => copyField(section)}
-                      disabled={!fields[section]}
-                      className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md transition-all duration-150 disabled:opacity-30 disabled:cursor-not-allowed bg-[#f5f5f5] border border-gray-200 text-gray-500 hover:border-[#009083] hover:text-[#009083]"
+                      onClick={copyAll}
+                      className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-md transition-all duration-150 bg-[#009083] text-white hover:bg-[#007a70]"
                     >
-                      {copiedField === section ? (
+                      {copiedAll ? (
                         <>
-                          <svg className="w-3.5 h-3.5 text-[#009083]" fill="currentColor" viewBox="0 0 20 20">
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                           </svg>
-                          <span className="text-[#009083]">Kopierat</span>
+                          Kopierat!
                         </>
                       ) : (
                         <>
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
-                          Kopiera
+                          Kopiera allt
                         </>
                       )}
                     </button>
                   </div>
                   <textarea
-                    value={fields[section] || ""}
-                    onChange={(e) => setFields((prev) => ({ ...prev, [section]: e.target.value }))}
-                    placeholder="—"
-                    rows={fields[section] ? Math.max(2, fields[section].split("\n").length + 1) : 2}
-                    className="w-full p-4 bg-[#f8f8f8] border border-gray-200 rounded-xl resize-none text-[#333] text-sm placeholder-gray-300 focus:outline-none focus:border-[#009083] transition-colors"
+                    value={rawFormatted}
+                    onChange={(e) => setRawFormatted(e.target.value)}
+                    rows={Math.max(10, rawFormatted.split("\n").length + 2)}
+                    className="w-full p-5 bg-[#f8f8f8] border border-gray-200 rounded-xl resize-none text-[#333] text-sm focus:outline-none focus:border-[#009083] transition-colors"
                   />
                 </section>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>
